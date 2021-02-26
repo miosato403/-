@@ -1,0 +1,16 @@
+#データの生成
+x1<-rnorm(300)
+x2<-rep(c(15,rep(0,49)),6) #周期的に発生するスパイクの要素
+x3<-c(rep(0,150),rep(3,150))　#特定のタイミングで発生するステップ状の変化
+x4<-seq(0,8,length=300)
+x<-x1+x2+x3+x4
+xt<-ts(as.numeric(x),frequency=50)
+plot(xt)
+
+#検証
+library("bsts")
+y<-xt
+ss<-AddLocalLinearTrend(list(),y)
+model<-bsts(y,state.specification = ss,niter=500)
+pred<-predict(model,horizon=12,burn = 100)
+plot(pred)
